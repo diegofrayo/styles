@@ -55,26 +55,23 @@ export const spacingY = (property, value) => {
 };
 
 export const getUnits = (value, themeValues) => {
-  let finalValue = value;
+  const finalValue =
+    Array.isArray(themeValues) && themeValues[value] !== undefined
+      ? themeValues[value]
+      : value;
 
-  if (Array.isArray(themeValues)) {
-    finalValue = themeValues[value];
-
-    if (finalValue === undefined) {
-      return themeValues.default;
-    }
-
-    return finalValue;
-  }
-
-  if (typeof finalValue === 'number') {
+  if (typeof value === 'number') {
     return `${finalValue}px`;
   }
 
-  return finalValue;
+  if (typeof value === 'string') {
+    return value;
+  }
+
+  return undefined;
 };
 
-export const utils = {
+let utils = {
   if: (condition, result, resultFalse) => {
     if (typeof result === 'object') {
       return condition ? result.true : result.false;
@@ -101,8 +98,16 @@ export const utils = {
     return value;
   },
 
-  marginX: value => spacingX('margin', getUnits(value, getTheme().spacing)),
-  marginY: value => spacingY('margin', getUnits(value, getTheme().spacing)),
-  paddingX: value => spacingX('padding', getUnits(value, getTheme().spacing)),
-  paddingY: value => spacingY('padding', getUnits(value, getTheme().spacing)),
+  marginX: value => spacingX('margin', getUnits(value, getTheme().space)),
+  marginY: value => spacingY('margin', getUnits(value, getTheme().space)),
+  paddingX: value => spacingX('padding', getUnits(value, getTheme().space)),
+  paddingY: value => spacingY('padding', getUnits(value, getTheme().space)),
+};
+
+export const extendUtils = values => {
+  utils = { ...utils, ...values };
+};
+
+export const getUtils = () => {
+  return utils;
 };

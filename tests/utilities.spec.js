@@ -1,6 +1,8 @@
 import 'core-js/shim';
 
-import { arrayWithAliases, getUnits, keyMirror, utils } from '../src';
+import { arrayWithAliases, getUnits, keyMirror, getUtils, extendUtils } from '../src';
+
+const utils = getUtils();
 
 describe('utilities tests', () => {
   test('arrayWithAliases', () => {
@@ -43,29 +45,18 @@ describe('utilities tests', () => {
   test('getUnits', () => {
     let result;
     const values = [1, 2, 3, 4, 5];
-    values.default = 30;
 
     result = getUnits(0, values);
-    expect(result).toBe(1);
+    expect(result).toBe('1px');
 
     result = getUnits(2, values);
-    expect(result).toBe(3);
+    expect(result).toBe('3px');
 
     result = getUnits(10, values);
-    expect(result).toBe(30);
-
-    values.default = undefined;
-    result = getUnits(10, values);
-    expect(result).toBe(undefined);
-
-    result = getUnits(10);
     expect(result).toBe('10px');
 
-    result = getUnits('50');
-    expect(result).toBe('50');
-
-    result = getUnits('30px');
-    expect(result).toBe('30px');
+    result = getUnits('50px');
+    expect(result).toBe('50px');
   });
 
   test('utils - if', () => {
@@ -101,5 +92,10 @@ describe('utilities tests', () => {
     delete values.default;
     result = utils.switch('no', values);
     expect(result).toBe(undefined);
+  });
+
+  test('utils - extendUtils', () => {
+    extendUtils({ sum: (a, b) => a + b });
+    expect(getUtils().sum(3, 2)).toBe(5);
   });
 });
