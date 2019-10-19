@@ -28,6 +28,17 @@ export const createStyles = fn => {
   return fn({ theme: getTheme(), utils: getUtils() });
 };
 
+export const createComponentStyles = fn => {
+  return Object.entries(fn({ theme: getTheme(), utils: getUtils() })).reduce(
+    (result, [key, value]) => {
+      // eslint-disable-next-line no-param-reassign
+      result[key] = css(value);
+      return result;
+    },
+    {},
+  );
+};
+
 export const injectGlobal = styles => {
   let cssStyles =
     typeof styles === 'function'
